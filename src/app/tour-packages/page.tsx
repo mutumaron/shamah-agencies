@@ -4,7 +4,7 @@ import FilterPackage from "@/components/custom/Packages/FilterPackage";
 import GridPackage from "@/components/custom/Packages/GridPackage";
 import { Package } from "@/lib/types";
 import { useSearchParams } from "next/navigation";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import useSWR from "swr";
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -42,19 +42,21 @@ const page = () => {
   const promoPackages = packages.filter((pkg) => pkg.promo === true);
 
   return (
-    <div className="px-10 py-5 flex flex-col gap-12 md:flex-row">
-      <div className="md:flex md:w-1/4">
-        <FilterPackage promoPackages={promoPackages} />
+    <Suspense fallback={<div>Loading destinations...</div>}>
+      <div className="px-10 py-5 flex flex-col gap-12 md:flex-row">
+        <div className="md:flex md:w-1/4">
+          <FilterPackage promoPackages={promoPackages} />
+        </div>
+        <div className="md:flex md:">
+          <GridPackage
+            packages={packages}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+        </div>
       </div>
-      <div className="md:flex md:">
-        <GridPackage
-          packages={packages}
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={setCurrentPage}
-        />
-      </div>
-    </div>
+    </Suspense>
   );
 };
 

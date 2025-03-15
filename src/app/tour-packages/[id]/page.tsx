@@ -2,7 +2,7 @@
 
 import SinglePackage from "@/components/custom/Packages/SinglePackage";
 import useSWR from "swr";
-import React from "react";
+import React, { Suspense } from "react";
 import { useParams } from "next/navigation";
 import { Package } from "@/lib/types";
 
@@ -20,9 +20,9 @@ const page = () => {
 
   const packageData = data.data;
   return (
-    <div className="">
+    <Suspense fallback={<div>Loading destinations...</div>}>
       <SinglePackage packageData={packageData} />
-    </div>
+    </Suspense>
   );
 };
 

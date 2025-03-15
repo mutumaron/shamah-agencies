@@ -1,0 +1,15 @@
+/* Make the progress bar thicker */
+#nprogress .bar {
+  height: 5px; /* Adjust thickness */
+  background: blueviolet !important; /* Change color to green */
+}
+
+/* Customize the spinner (optional) */
+#nprogress .peg {
+  box-shadow: 0 0 10px blueviolet, 0 0 5px blueviolet !important;
+}
+
+/* Remove the spinner if not needed
+#nprogress .spinner {
+  display: none !important;
+} */

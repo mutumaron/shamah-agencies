@@ -41,7 +41,6 @@ const types = [
 ];
 
 const locations = [
-  ,
   "kenya",
   "nairobi",
   "zanzibar",

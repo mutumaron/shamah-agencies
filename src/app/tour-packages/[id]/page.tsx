@@ -1,7 +1,8 @@
 "use client";
 
 import SinglePackageSuspense from "@/components/custom/Packages/SingePackageSuspense";
-import React from "react";
+
+export const dynamic = "force-dynamic";
 
 const page = () => {
   return <SinglePackageSuspense />;

@@ -1,7 +1,8 @@
 "use client";
 
 import Confirm from "@/components/custom/Confirm/Confirm";
-import React from "react";
+
+export const dynamic = "force-dynamic";
 
 const page = () => {
   return <Confirm />;

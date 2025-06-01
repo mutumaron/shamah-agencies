@@ -1,8 +1,12 @@
 import SinglePackageSuspense from "@/components/custom/Packages/SingePackageSuspense";
-import React from "react";
+import React, { Suspense } from "react";
 
 const page = () => {
-  return <SinglePackageSuspense />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <SinglePackageSuspense />
+    </Suspense>
+  );
 };
 
 export default page;

@@ -1,11 +1,14 @@
 "use client";
 
 import PackageSuspensePage from "@/components/custom/Packages/PackageSuspensePage";
-
-export const dynamic = "force-dynamic";
+import { Suspense } from "react";
 
 const page = () => {
-  return <PackageSuspensePage />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PackageSuspensePage />
+    </Suspense>
+  );
 };
 
 export default page;

@@ -1,11 +1,14 @@
 "use client";
 
 import DestinationPageSuspense from "@/components/custom/Destinations/DestinationPageSuspense";
-
-export const dynamic = "force-dynamic";
+import { Suspense } from "react";
 
 const page = () => {
-  return <DestinationPageSuspense />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DestinationPageSuspense />
+    </Suspense>
+  );
 };
 
 export default page;

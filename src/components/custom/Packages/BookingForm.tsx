@@ -243,7 +243,6 @@ export function BookingForm({ packageId }: BookingFormProps) {
             )}
           />
         </div>
-        <Button className="w-full bg-green-600">Book Via WhatsApp</Button>
         {loading ? (
           <Button disabled className="w-full flex gap-3 items-center">
             <Loader2 className="animate-spin" />

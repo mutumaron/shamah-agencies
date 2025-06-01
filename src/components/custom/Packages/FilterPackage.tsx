@@ -4,11 +4,14 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2, LocateIcon, Search } from "lucide-react";
-import React, { useState, useTransition } from "react";
+import React, { useEffect, useMemo, useState, useTransition } from "react";
 import PackageBanner from "./PackageBanner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Package } from "@/lib/types";
 import BannerCard from "@/components/customUI/BannerCard";
+import { useDebounce } from "@/hooks/Debounce";
+import { useDataContext } from "@/store/DataContext";
+import { useTheme } from "next-themes";
 
 interface PromoPackagesProps {
   promoPackages: Package[];
@@ -28,40 +31,65 @@ const types = [
 ];
 
 const FilterPackage = ({ promoPackages }: PromoPackagesProps) => {
+  const { packages } = useDataContext();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [selectedType, setSelectedType] = useState("");
   const [searchText, setSearchText] = useState("");
   const [isPending, startTransition] = useTransition();
+  const [suggestions, setSuggestions] = useState<Package[]>([]);
+  const { theme } = useTheme();
 
-  const updateUrl = (type: string, search: string) => {
+  const debouncedSearch = useDebounce(searchText, 300);
+  const destination = searchParams.get("destination") || "";
+
+  useEffect(() => {
+    const initialType = searchParams.get("type") || "";
+    const initialSearch = searchParams.get("search") || "";
+    setSelectedType(initialType);
+    setSearchText(initialSearch);
+  }, []);
+
+  // 🔄 Update URL when search or type changes (live)
+  useEffect(() => {
     const query = new URLSearchParams();
-    if (type && type !== "All") {
-      query.set("type", type);
+    if (selectedType && selectedType !== "All") {
+      query.set("type", selectedType);
+    } else {
+      query.delete("type");
     }
-    if (search.trim()) {
-      query.set("search", search.trim());
+    if (debouncedSearch.trim()) {
+      query.set("search", debouncedSearch.trim());
+    } else {
+      query.delete("search");
     }
+    if (destination) {
+      query.set("destination", destination);
+    }
+
     startTransition(() => {
-      router.push(`/tour-packages?${query.toString()}`);
+      router.replace(`/tour-packages?${query.toString()}`);
     });
+  }, [debouncedSearch, selectedType]);
+
+  // 🔎 Filter suggestions on the fly
+  useEffect(() => {
+    if (!debouncedSearch) {
+      setSuggestions([]);
+      return;
+    }
+
+    const lowerQuery = debouncedSearch.toLowerCase();
+    const filtered = packages.filter((pkg) =>
+      pkg.title.toLowerCase().includes(lowerQuery)
+    );
+    setSuggestions(filtered.slice(0, 6)); // optional: limit results
+  }, [debouncedSearch, packages]);
+
+  const handleTypeClick = (type: string) => {
+    const newType = selectedType === type ? "" : type;
+    setSelectedType(newType);
   };
-
-  const handleLocationClick = (type: string) => {
-    const newSelection = selectedType === type ? "" : type;
-    setSelectedType(newSelection);
-    updateUrl(newSelection, searchText);
-
-    // if (!newSelection || newSelection === "All") {
-    //   router.push("destinations");
-    // } else {
-    //   router.push(`/destinations?location=${encodeURIComponent(newSelection)}`);
-    // }
-  };
-
-  const handleSearch = () => {
-    updateUrl(selectedType, searchText);
-  };
-
   return (
     <div className="flex flex-col gap-6">
       <div className="flex flex-col gap-3">
@@ -71,15 +99,38 @@ const FilterPackage = ({ promoPackages }: PromoPackagesProps) => {
           or Safari)
         </p>
         <div className="flex items-center gap-3">
-          <div className="grid w-full max-w-sm items-center gap-1.5">
+          <div className=" relative grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="email">Package</Label>
             <Input
               type="search"
               id="search"
               placeholder="Search A Package"
               value={searchText}
+              autoComplete="off"
               onChange={(e) => setSearchText(e.target.value)}
             />
+            {debouncedSearch && suggestions.length > 0 && (
+              <div
+                className={`absolute z-10 ${
+                  theme === "light" ? "bg-white" : "bg-[#09090b]"
+                } top-16 border shadow rounded mt-1 w-full max-h-48 overflow-auto`}
+              >
+                {suggestions.map((pkg) => (
+                  <div
+                    key={pkg.id}
+                    className={`px-4 py-2 ${
+                      theme === "light" ? "hover:bg-gray-100" : "hover:bg-black"
+                    } cursor-pointer text-sm`}
+                    onClick={() => {
+                      setSearchText(pkg.title);
+                      setSuggestions([]);
+                    }}
+                  >
+                    {pkg.title}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <Search />
         </div>
@@ -93,22 +144,19 @@ const FilterPackage = ({ promoPackages }: PromoPackagesProps) => {
               className={`max-w-fit px-6 py-1 rounded-full cursor-pointer hover:bg-gray-200 ${
                 selectedType === type ? "border-2 border-purple-700" : ""
               }`}
-              onClick={() => handleLocationClick(type)}
+              onClick={() => handleTypeClick(type)}
             >
               <h1 className="text-sm">{type}</h1>
             </Card>
           ))}
         </div>
       </div>
-      {isPending ? (
+      {isPending && (
         <Button disabled>
           <Loader2 className="animate-spin" />
-          Searching...
+          updating...
         </Button>
-      ) : (
-        <Button onClick={handleSearch}>Search</Button>
       )}
-
       <div className="h-fit">
         {promoPackages[1] && <BannerCard promoDetails={promoPackages[1]} />}
       </div>

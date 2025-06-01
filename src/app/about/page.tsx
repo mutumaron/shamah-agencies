@@ -13,7 +13,7 @@ const AboutPage = () => {
     <div>
       <Hero />
       <CardGrid />
-      <div className="bg-gray-50">
+      <div>
         <OurStory />
       </div>
       <Values />

@@ -5,10 +5,13 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Package } from "@/lib/types";
+import { useDebounce } from "@/hooks/Debounce";
+import { Destination, Package } from "@/lib/types";
+import { useDataContext } from "@/store/DataContext";
 import { Loader2, LocateIcon, MapPin, X } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { useState, useTransition } from "react";
+import { useTheme } from "next-themes";
+import { useRouter, useSearchParams } from "next/navigation";
+import React, { useEffect, useState, useTransition } from "react";
 
 interface PromoPackagesProps {
   promoPackages: Package[];
@@ -16,8 +19,8 @@ interface PromoPackagesProps {
 
 const locations = [
   "All",
-  "Mombasa",
-  "Nairobi",
+  "Kenya",
+  "Tanzania",
   "Zanzibar",
   "Nakuru",
   "Dubai",
@@ -27,39 +30,58 @@ const locations = [
 ];
 
 const Filter = ({ promoPackages }: PromoPackagesProps) => {
+  const { destinations } = useDataContext();
+  const searchParams = useSearchParams();
   const router = useRouter();
   const [selectedLocation, setSelectedLocation] = useState("");
   const [searchText, setSearchText] = useState("");
   const [isPending, startTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(false);
+  const { theme } = useTheme();
 
-  const updateUrl = (location: string, search: string) => {
+  const [suggestions, setSuggestions] = useState<Destination[]>([]);
+  const debouncedSearch = useDebounce(searchText, 300);
+
+  useEffect(() => {
+    const initialLocation = searchParams.get("location") || "";
+    const initialSearch = searchParams.get("search") || "";
+    setSelectedLocation(initialLocation);
+    setSearchText(initialSearch);
+  }, []);
+
+  useEffect(() => {
     const query = new URLSearchParams();
-    if (location && location !== "All") {
-      query.set("location", location);
+    if (selectedLocation && selectedLocation !== "All") {
+      query.set("location", selectedLocation);
+    } else {
+      query.delete("location");
     }
-    if (search.trim()) {
-      query.set("search", search.trim());
+    if (debouncedSearch.trim()) {
+      query.set("search", debouncedSearch.trim());
+    } else {
+      query.delete("search");
     }
+
     startTransition(() => {
-      router.push(`/destinations?${query.toString()}`);
+      router.replace(`/destinations?${query.toString()}`);
     });
-  };
+  }, [debouncedSearch, selectedLocation]);
+
+  useEffect(() => {
+    if (!debouncedSearch) {
+      setSuggestions([]);
+      return;
+    }
+    const lowerQuery = debouncedSearch.toLowerCase();
+    const filtered = destinations.filter((dest) =>
+      dest.title.toLowerCase().includes(lowerQuery)
+    );
+    setSuggestions(filtered.slice(0, 6));
+  }, [debouncedSearch, destinations]);
 
   const handleLocationClick = (location: string) => {
     const newSelection = selectedLocation === location ? "" : location;
     setSelectedLocation(newSelection);
-    updateUrl(newSelection, searchText);
-
-    // if (!newSelection || newSelection === "All") {
-    //   router.push("destinations");
-    // } else {
-    //   router.push(`/destinations?location=${encodeURIComponent(newSelection)}`);
-    // }
-  };
-
-  const handleSearch = () => {
-    updateUrl(selectedLocation, searchText);
   };
 
   return (
@@ -71,15 +93,38 @@ const Filter = ({ promoPackages }: PromoPackagesProps) => {
           Nairobi or Kisumu)
         </p>
         <div className="flex items-center gap-3">
-          <div className="grid w-full max-w-sm items-center gap-1.5">
+          <div className="relative grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="email">Where</Label>
             <Input
               type="search"
               id="search"
               placeholder="Search A Location"
               value={searchText}
+              autoComplete="off"
               onChange={(e) => setSearchText(e.target.value)}
             />
+            {debouncedSearch && suggestions.length > 0 && (
+              <div
+                className={`absolute z-10 ${
+                  theme === "light" ? "bg-white" : "bg-[#09090b]"
+                }  top-16 border shadow rounded mt-1 w-full max-h-48 overflow-auto`}
+              >
+                {suggestions.map((dest) => (
+                  <div
+                    key={dest.id}
+                    className={`px-4 py-2 ${
+                      theme === "light" ? "hover:bg-gray-100" : "hover:bg-black"
+                    }  cursor-pointer text-sm`}
+                    onClick={() => {
+                      setSearchText(dest.title);
+                      setSuggestions([]);
+                    }}
+                  >
+                    {dest.title}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <MapPin />
         </div>
@@ -103,13 +148,11 @@ const Filter = ({ promoPackages }: PromoPackagesProps) => {
         </div>
       </div>
 
-      {isPending ? (
+      {isPending && (
         <Button disabled>
           <Loader2 className="animate-spin" />
-          Searching...
+          updating...
         </Button>
-      ) : (
-        <Button onClick={handleSearch}>Search</Button>
       )}
       <div className="h-fit">
         {promoPackages[0] && <BannerCard promoDetails={promoPackages[0]} />}

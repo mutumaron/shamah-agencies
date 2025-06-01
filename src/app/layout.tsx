@@ -6,6 +6,8 @@ import Footer from "@/components/custom/Footer";
 import MobileNavbar from "@/components/custom/MobileNavbar";
 import ProgressBar from "@/components/customUI/ProgressBar";
 import { Toaster } from "@/components/ui/sonner";
+import { DataProvider } from "@/store/DataContext";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -29,18 +31,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <MobileNavbar />
-        <div className="hidden md:block">
-          <Navbar />
-        </div>
-        <ProgressBar />
-        <div className="lg:mt-20 mt-16">{children}</div>
-        <Toaster />
-        <Footer />
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <MobileNavbar />
+          <div className="hidden md:block">
+            <Navbar />
+          </div>
+          <ProgressBar />
+          <DataProvider>
+            <div className="lg:mt-20 mt-16">{children}</div>
+          </DataProvider>
+          <Toaster />
+          <Footer />
+        </ThemeProvider>
       </body>
     </html>
   );

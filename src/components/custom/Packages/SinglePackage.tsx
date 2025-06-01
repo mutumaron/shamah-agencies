@@ -1,12 +1,9 @@
 "use client";
 import React from "react";
 import PackageDetails from "./PackageDetails";
-import { Separator } from "@/components/ui/separator";
 import AboutPackage from "./AboutPackage";
 import { BookingForm } from "./BookingForm";
 import { Package } from "@/lib/types";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
 
 interface SinglePackageProps {
   packageData: Package;

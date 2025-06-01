@@ -41,7 +41,7 @@ const types = [
 ];
 
 const locations = [
-  "All",
+  ,
   "kenya",
   "nairobi",
   "zanzibar",
@@ -107,19 +107,7 @@ const FilterContent = () => {
           <MapPin />
         </div>
       </div>
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="location">Package</Label>
-        <div className="flex items-center gap-2">
-          <Input
-            id="search"
-            value={searchText}
-            onChange={(e) => setSearchText(e.target.value)}
-            type="text"
-            placeholder="Enter Package"
-          />
-          <SearchIcon />
-        </div>
-      </div>
+
       <div className="flex flex-col gap-2">
         <Label htmlFor="location">Type</Label>
         <div className="flex items-center gap-2">

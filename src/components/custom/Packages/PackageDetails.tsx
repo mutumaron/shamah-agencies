@@ -53,6 +53,21 @@ const PackageDetails = ({ details }: DetailsProps) => {
             className=" lg:h-[190px] lg:w-[300px] w-1/2 rounded-lg"
           />
         </div>
+
+        <div
+          // style={{ width: "25%", height: "400px", borderRadius: "100px" }}
+          className="rounded-xl w-full h-[250px] lg:w-1/4 lg:h-[400px]"
+        >
+          <iframe
+            title="Maasai Mara, Kenya"
+            src={details.mapurl}
+            width="100%"
+            height="100%"
+            style={{ border: 0 }}
+            allowFullScreen
+            aria-hidden
+          />
+        </div>
       </div>
       <div className="flex justify-between lg:pr-3 items-center flex-wrap">
         <div className="lg:flex justify-between lg:w-2/3 grid grid-cols-2 gap-12">

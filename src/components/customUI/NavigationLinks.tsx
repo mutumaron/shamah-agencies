@@ -5,47 +5,32 @@ const NavigationLinks = () => {
   return (
     <ul className="flex justify-between gap-4">
       <li>
-        <Link href={"/"} className="text-gray-800 font-bold hover:underline">
+        <Link href={"/"} className=" font-bold hover:underline">
           Home
         </Link>
       </li>
       <li>
-        <Link
-          href={"/about"}
-          className="text-gray-800 font-bold hover:underline"
-        >
+        <Link href={"/about"} className="font-bold hover:underline">
           About
         </Link>
       </li>
       <li>
-        <Link
-          href={"/destinations"}
-          className="text-gray-800 font-bold hover:underline"
-        >
+        <Link href={"/destinations"} className=" font-bold hover:underline">
           Destinations
         </Link>
       </li>
       <li>
-        <Link
-          href={"/tour-packages"}
-          className="text-gray-800 font-bold hover:underline"
-        >
+        <Link href={"/tour-packages"} className=" font-bold hover:underline">
           Tour-Packages
         </Link>
       </li>
       <li>
-        <Link
-          href={"/contact"}
-          className="text-gray-800 font-bold hover:underline"
-        >
+        <Link href={"/contact"} className="font-bold hover:underline">
           Contact
         </Link>
       </li>
       <li>
-        <Link
-          href={"/faqs"}
-          className="text-gray-800 font-bold hover:underline"
-        >
+        <Link href={"/faqs"} className="font-bold hover:underline">
           faqs
         </Link>
       </li>

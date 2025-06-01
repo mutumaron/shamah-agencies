@@ -1,42 +1,9 @@
-"use client";
-
-import useSWR from "swr";
 import Destinations from "@/components/custom/Home/Destinations";
 import Hero from "@/components/custom/Home/Hero";
 import PromoBanner from "@/components/custom/Home/PromoBanner";
 import Properties from "@/components/custom/Home/Properties";
-import { Destination, Package } from "@/lib/types";
-
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function Home() {
-  const { data: destinationData, error: destinationError } = useSWR<{
-    data: Destination[];
-  }>("/api/destinations", fetcher);
-  const { data: packageData, error: packageError } = useSWR<{
-    data: Package[];
-  }>("/api/packages", fetcher);
-
-  if (destinationError || packageError) return <div>Error loading data</div>;
-  if (!destinationData || !packageData) return null;
-
-  const destinations = destinationData.data.slice(0, 3);
-  const packages = packageData.data.slice(0, 4);
-
-  const packageCounts = packages.reduce((acc, pkg) => {
-    const key = pkg.param.toLowerCase();
-    acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  const destinationsWithCounts = destinations
-    .map((destination) => ({
-      ...destination,
-      tours: packageCounts[destination.param.toLowerCase()] || 0,
-    }))
-    .filter((destination) => destination.tours > 0);
-
-  const promoPackages = packageData.data.filter((pkg) => pkg.promo === true);
   return (
     <div className="flex flex-col gap-10">
       <Hero />
@@ -44,7 +11,7 @@ export default function Home() {
         style={{ backgroundImage: "url('/images/bg-hero-2.png')" }}
         className="inset-0 bg-cover bg-center"
       >
-        <Destinations destinations={destinationsWithCounts} />
+        <Destinations />
       </div>
       <div className="flex flex-col items-center">
         <div className="flex flex-col items-center mb-5">
@@ -55,9 +22,9 @@ export default function Home() {
             Our Amazing Featured Tour Packages
           </h1>
         </div>
-        <Properties packages={packages} />
+        <Properties />
       </div>
-      <PromoBanner promoPackages={promoPackages} />
+      <PromoBanner />
     </div>
   );
 }

@@ -89,25 +89,6 @@ const AboutPackage = ({ about }: AboutPageProps) => {
           </Accordion>
         </div>
       </div>
-      <Separator />
-      <div className="flex flex-col gap-4 ">
-        <h1 className="font-bold text-xl">Location</h1>
-        <p className="text-gray-700">{about.mapdata}</p>
-        <div
-          style={{ width: "100%", height: "400px", borderRadius: "100px" }}
-          className="rounded-lg"
-        >
-          <iframe
-            title="Maasai Mara, Kenya"
-            src={about.mapurl}
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen
-            aria-hidden
-          />
-        </div>
-      </div>
     </section>
   );
 };

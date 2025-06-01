@@ -18,7 +18,7 @@ const DestinationCards = ({ img, title, tours, param }: Props) => {
     router.push(`/tour-packages?destination=${encodeURIComponent(param)}`);
   };
   return (
-    <Card className="relative flex">
+    <Card className="relative flex cursor-pointer" onClick={handleClick}>
       <Image
         src={img}
         alt="title"
@@ -26,12 +26,9 @@ const DestinationCards = ({ img, title, tours, param }: Props) => {
         height={700}
         className="h-[450px] rounded-lg w-full"
       />
-      <Card className="absolute bottom-10 right-1/4 flex justify-between w-1/2 p-2">
+      <Card className="absolute bottom-10 right-1/4 flex justify-between w-1/2 p-2 cursor-pointer">
         <div>
-          <h1
-            onClick={handleClick}
-            className="font-bold text-xl hover:underline cursor-pointer   "
-          >
+          <h1 className="font-bold text-xl hover:underline cursor-pointer   ">
             {title}
           </h1>
           <p className="text-gray-600">{tours} tours</p>

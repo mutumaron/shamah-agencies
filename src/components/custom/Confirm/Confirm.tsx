@@ -1,10 +1,12 @@
 "use client";
 
 import PropertyCard from "@/components/custom/Home/PropertyCard";
+import PackageSkeletonCard from "@/components/customUI/Skeletons/PackageSkeletonCard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Booking, Package } from "@/lib/types";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -103,63 +105,96 @@ Price: $${pkg.price}`;
   }
 
   if (!booking || !pkg) {
-    return <div>Error loading confirmation details.</div>;
+    return <div>loading confirmation details.</div>;
   }
 
   return (
     <div className="flex flex-col mx-10 py-12">
       <div className="flex flex-col md:flex-row gap-10 justify-between">
-        <PropertyCard pack={pkg} />
+        {loading ? <PackageSkeletonCard /> : <PropertyCard pack={pkg} />}
+
         <Card className="space-y-6 border p-3 rounded-lg">
           <h1 className="font-bold text-xl">Booking Details</h1>
           <div className="grid md:grid-cols-2 gap-5">
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">First name</h1>
-              <p className="text-gray-900 p-2 border border-black rounded-md">
-                {booking.firstname}
-              </p>
+              {loading ? (
+                <Skeleton className="h-6 w-3/4" />
+              ) : (
+                <p className=" p-2 border border-black rounded-md">
+                  {booking.firstname}
+                </p>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Last name</h1>
-              <p className="text-gray-900 p-2 border border-black rounded-md">
-                {booking.lastname}
-              </p>
+              {loading ? (
+                <Skeleton className="h-6 w-3/4" />
+              ) : (
+                <p className="p-2 border border-black rounded-md">
+                  {booking.lastname}
+                </p>
+              )}
             </div>{" "}
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Your Phone number</h1>
-              <p className="text-gray-900 p-2 border border-black rounded-md">
-                {booking.phone}
-              </p>
+              {loading ? (
+                <Skeleton className="h-6 w-3/4" />
+              ) : (
+                <p className=" p-2 border border-black rounded-md">
+                  {booking.phone}
+                </p>
+              )}
             </div>{" "}
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Your Email</h1>
-              <p className="text-gray-900 p-2 border border-black rounded-md">
-                {booking.email}
-              </p>
+              {loading ? (
+                <Skeleton className="h-6 w-3/4" />
+              ) : (
+                <p className=" p-2 border border-black rounded-md">
+                  {booking.email}
+                </p>
+              )}
             </div>{" "}
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Check In Date</h1>
-              <p className="text-gray-900 p-2 border border-black rounded-md">
-                {booking.checkin}
-              </p>
+              {loading ? (
+                <Skeleton className="h-6 w-3/4" />
+              ) : (
+                <p className=" p-2 border border-black rounded-md">
+                  {booking.checkin}
+                </p>
+              )}
             </div>{" "}
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Check Out date</h1>
-              <p className="text-gray-900 p-2 border border-black rounded-md">
-                {booking.checkout}
-              </p>
+              {loading ? (
+                <Skeleton className="h-6 w-3/4" />
+              ) : (
+                <p className=" p-2 border border-black rounded-md">
+                  {booking.checkout}
+                </p>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Number of Adults</h1>
-              <p className="text-gray-900 p-2 border border-black rounded-md">
-                {booking.noadults}
-              </p>
+              {loading ? (
+                <Skeleton className="h-6 w-3/4" />
+              ) : (
+                <p className=" p-2 border border-black rounded-md">
+                  {booking.noadults}
+                </p>
+              )}
             </div>
             <div className="flex flex-col gap-2">
               <h1 className="font-bold">Number of children</h1>
-              <p className="text-gray-900 p-2 border border-black rounded-md">
-                {booking.nochildren}
-              </p>
+              {loading ? (
+                <Skeleton className="h-6 w-3/4" />
+              ) : (
+                <p className=" p-2 border border-black rounded-md">
+                  {booking.nochildren}
+                </p>
+              )}
             </div>
           </div>
         </Card>

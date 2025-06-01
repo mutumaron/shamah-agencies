@@ -1,12 +1,10 @@
+"use client";
+
 import SinglePackageSuspense from "@/components/custom/Packages/SingePackageSuspense";
-import React, { Suspense } from "react";
+import React from "react";
 
 const page = () => {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <SinglePackageSuspense />
-    </Suspense>
-  );
+  return <SinglePackageSuspense />;
 };
 
 export default page;

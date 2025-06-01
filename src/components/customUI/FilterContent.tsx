@@ -40,7 +40,7 @@ const types = [
   "Camping",
 ];
 
-const locations = [
+const locations: string[] = [
   "kenya",
   "nairobi",
   "zanzibar",
